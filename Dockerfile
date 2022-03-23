@@ -139,6 +139,19 @@ RUN curl https://dlcdn.apache.org/spark/spark-${SPARK_VERSION}/spark-${SPARK_VER
 
 COPY example ${HOME}/
 
+RUN rm -rf ijava-kernel work
+
+
+####################
+# Install Scala Kernel for jupyter
+####################
+
+RUN curl -Lo /usr/local/bin/coursier https://github.com/coursier/coursier/releases/download/v2.0.0-RC3-2/coursier && \
+    chmod +x /usr/local/bin/coursier
 
 # Set user back to priviledged user.
 USER ${NB_USER}
+
+COPY bin/install-kernels.sh .
+RUN ./install-kernels.sh && \
+    rm install-kernels.sh
