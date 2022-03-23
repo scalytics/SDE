@@ -1,4 +1,6 @@
-# Blossom Docker 
+# Blossom Development Environment (BDE)
+
+Read our [Wiki](https://github.com/databloom-ai/BDE/wiki) how to use the BDE, with code examples and how-to's
 
 The Blossom docker have installed inside 
 - Java [11](https://www.azul.com/downloads/?version=java-11-lts&os=ubuntu&architecture=x86-64-bit&package=jdk)
