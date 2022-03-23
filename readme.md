@@ -20,7 +20,7 @@ docker build -t blossom ./
 docker run -p 8888:8888 -v ${HOME}/.ivy2:/home/jovyan/.ivy2 blossom
 ```
 
-## Execute command inside of docker container
+## Execute commands inside the docker container
 ```bash
 docker exec -it $(docker container ls | grep "blossom" | tr " " "\n" | tail -n 1) /bin/bash
 ```
