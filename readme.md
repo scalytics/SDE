@@ -2,7 +2,7 @@
 
 Read our [Wiki](https://github.com/databloom-ai/BDE/wiki) how to use the BDE, with code examples and how-to's
 
-The Blossom docker have installed inside 
+BDE comes with: 
 - Java [11](https://www.azul.com/downloads/?version=java-11-lts&os=ubuntu&architecture=x86-64-bit&package=jdk)
 - Maven [3.6.1](https://maven.apache.org/ref/3.6.3/)
 - Apache Hadoop [2.7.7](https://hadoop.apache.org/docs/r2.7.7/)
