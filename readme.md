@@ -11,7 +11,8 @@ BDE comes with:
 - iJava [1.3.0](https://github.com/SpencerPark/IJava/releases/tag/v1.3.0)
 - Jupyter lab [3.3.0](https://jupyterlab.readthedocs.io/en/3.3.x/)
 
-## Builing the docker image
+
+## Build the docker image
 ```bash
 docker build -t blossom ./
 ```
@@ -25,4 +26,6 @@ docker run -p 8888:8888 -v ${HOME}/.ivy2:/home/jovyan/.ivy2 blossom
 ```bash
 docker exec -it $(docker container ls | grep "blossom" | tr " " "\n" | tail -n 1) /bin/bash
 ```
+
+
 
