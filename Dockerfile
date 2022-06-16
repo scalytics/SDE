@@ -74,7 +74,7 @@ RUN curl http://archive.apache.org/dist/hadoop/core/hadoop-${HADOOP_VERSION}/had
  && mkdir -p /usr/local/hadoop/logs
 
 # Overwrite default HADOOP configuration files with our config files
-COPY hadoop/conf $HADOOP_HOME/etc/hadoop/
+#COPY hadoop/conf $HADOOP_HOME/etc/hadoop/
 
 # Formatting HDFS
 RUN mkdir -p /data/dfs/data /data/dfs/name /data/dfs/namesecondary
