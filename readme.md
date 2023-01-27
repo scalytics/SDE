@@ -11,6 +11,10 @@ BDE comes with:
 - iJava [1.3.0](https://github.com/SpencerPark/IJava/releases/tag/v1.3.0)
 - Jupyter lab [3.3.0](https://jupyterlab.readthedocs.io/en/3.3.x/)
 
+## Use BDE with our pre-built Docker image
+```
+docker pull ghcr.io/databloom-ai/bde:main
+```
 
 ## Build the docker image
 ```bash
