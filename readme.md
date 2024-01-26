@@ -31,5 +31,7 @@ docker run -p 8888:8888 -v ${HOME}/.ivy2:/home/jovyan/.ivy2 blossom
 docker exec -it $(docker container ls | grep "blossom" | tr " " "\n" | tail -n 1) /bin/bash
 ```
 
-
-
+## Fix permissions on ~/.ivy2  
+```
+sudo chmod -R 777 ~/.ivy2/
+```

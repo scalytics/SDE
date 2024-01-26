@@ -21,7 +21,15 @@ for SCALA_FULL_VERSION in ${SCALA_VERSIONS}; do
       sh.almond:scala-kernel_${SCALA_FULL_VERSION}:${ALMOND_VERSION} \
       --default=true --sources \
       -o almond ${EXTRA_ARGS[@]}
-  ./almond --install --log info --metabrowse --id scala${SCALA_MAJOR_VERSION_TRIMMED} --display-name "Scala ${SCALA_MAJOR_VERSION}" --extra-repository https://repository.apache.org/content/repositories/snapshots --extra-repository file:///maven/local/repository --force-property spark.version=3.1.2
+  # ./almond --install --log info --metabrowse --id scala${SCALA_MAJOR_VERSION_TRIMMED} --display-name "Scala ${SCALA_MAJOR_VERSION}" --extra-repository https://repository.apache.org/content/repositories/snapshots --extra-repository file:///maven/local/repository --force-property spark.version=3.1.2
+  ./almond --install \
+    --log info \
+    --metabrowse \
+    --id scala${SCALA_MAJOR_VERSION_TRIMMED} \
+    --display-name "Scala ${SCALA_MAJOR_VERSION}" \
+    --extra-repository https://repository.apache.org/content/repositories/snapshots \
+    --extra-repository file:///maven/local/repository \
+    --force-property spark.version=3.1.2
 #--auto-dependency com.thoughtworks.paranamer:paranamer:2.8
   rm -f almond
 done

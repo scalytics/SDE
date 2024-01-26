@@ -62,7 +62,7 @@ RUN rm ijava-kernel.zip
 # Install Hadoop
 ####################
 
-ENV HADOOP_VERSION  2.7.7
+ENV HADOOP_VERSION  3.1.2
 ENV HADOOP_HOME     /usr/local/hadoop
 ENV HADOOP_OPTS     -Djava.library.path=/usr/local/hadoop/lib/native
 ENV PATH            $PATH:${HADOOP_HOME}/bin:${HADOOP_HOME}/sbin
@@ -111,7 +111,13 @@ ARG MAVEN_VERSION=3.6.3
 ENV MAVEN_HOME    /usr/local/maven
 ENV PATH          $PATH:$MAVEN_HOME/bin
 
-RUN curl https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.zip --output apache-maven-${MAVEN_VERSION}-bin.zip \
+#RUN echo "https://archive.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.zip" \
+#    && curl https://archive.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.zip --output apache-maven-${MAVEN_VERSION}-bin.zip \
+#    && unzip apache-maven-${MAVEN_VERSION}-bin.zip \
+#    && mv apache-maven-3.6.3 ${MAVEN_HOME} \
+#    && rm -r apache-maven-${MAVEN_VERSION}-bin.zip
+
+RUN curl https://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.zip --output apache-maven-${MAVEN_VERSION}-bin.zip \
  && unzip apache-maven-${MAVEN_VERSION}-bin.zip \
  && mv apache-maven-3.6.3 ${MAVEN_HOME} \
  && rm -r apache-maven-${MAVEN_VERSION}-bin.zip
@@ -126,7 +132,7 @@ ENV SPARK_HOME    /usr/local/spark
 ENV SPARK_DIST_CLASSPATH="$HADOOP_HOME/etc/hadoop/*:$HADOOP_HOME/share/hadoop/common/lib/*:$HADOOP_HOME/share/hadoop/common/*:$HADOOP_HOME/share/hadoop/hdfs/*:$HADOOP_HOME/share/hadoop/hdfs/lib/*:$HADOOP_HOME/share/hadoop/hdfs/*:$HADOOP_HOME/share/hadoop/yarn/lib/*:$HADOOP_HOME/share/hadoop/yarn/*:$HADOOP_HOME/share/hadoop/mapreduce/lib/*:$HADOOP_HOME/share/hadoop/mapreduce/*:$HADOOP_HOME/share/hadoop/tools/lib/*"
 ENV PATH          $PATH:${SPARK_HOME}/bin
 
-RUN curl https://dlcdn.apache.org/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop2.7.tgz --output spark-${SPARK_VERSION}-bin-hadoop2.7.tgz  \
+RUN curl https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop2.7.tgz --output spark-${SPARK_VERSION}-bin-hadoop2.7.tgz  \
  && tar -zxf spark-${SPARK_VERSION}-bin-hadoop2.7.tgz \
  && rm spark-${SPARK_VERSION}-bin-hadoop2.7.tgz \
  && mv spark-${SPARK_VERSION}-bin-hadoop2.7 ${SPARK_HOME}
@@ -155,3 +161,10 @@ USER ${NB_USER}
 COPY bin/install-kernels.sh .
 RUN ./install-kernels.sh && \
     rm install-kernels.sh
+
+# Copy wayang and hadoop jars
+COPY wayang-0.6.1-SNAPSHOT /usr/local/wayang-0.6.1-SNAPSHOT
+COPY hadoop-jars /usr/local/hadoop-jars
+
+# Set WAYANG_ASYNC_CLASSPATH
+ENV WAYANG_ASYNC_CLASSPATH="/home/jovyan/.local/share/jupyter/kernels/scala212/launcher.jar:/usr/local/wayang-0.6.1-SNAPSHOT/jars/*:/usr/local/wayang-0.6.1-SNAPSHOT/libs/*:/usr/local/hadoop-jars/*"
