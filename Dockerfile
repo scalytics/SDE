@@ -18,45 +18,22 @@
 ####################
 # Jupyter is the base of the container
 ####################
-FROM jupyter/minimal-notebook:lab-3.3.0
+FROM openjdk:11-slim
 
 LABEL maintainer="Developer Team <engineering@databloom.ai>"
 
 USER root
-ENV DEBIAN_FRONTEND noninteractive
 ####################
 # Install Java
 ####################
-ARG JAVA_VERSION=11
-
 RUN apt-get update \
  && apt-get install -y curl \
                        software-properties-common \
                        gnupg \
-                       libzip5 \
+                       libzip4 \
+                       unzip \
                        libsnappy1v5  \
                        libssl-dev
-
-# Install Zulu OpenJdk 11 (LTS)
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0xB1998361219BD9C9 \
- && curl https://cdn.azul.com/zulu/bin/zulu-repo_1.0.0-2_all.deb --output zulu-repo_1.0.0-2_all.deb \
- && apt-get install ./zulu-repo_1.0.0-2_all.deb \
- && apt-get update \
- && apt-get install -y zulu${JAVA_VERSION}-jdk \
- && rm -f zulu-repo_1.0.0-2_all.deb
-
-ENV JAVA_HOME /usr/lib/jvm/zulu${JAVA_VERSION}
-
-# Unpack and install the kernel
-RUN curl -L https://github.com/SpencerPark/IJava/releases/download/v1.3.0/ijava-1.3.0.zip > ijava-kernel.zip
-RUN unzip ijava-kernel.zip -d ijava-kernel \
- && cd ijava-kernel \
- && python3 install.py --sys-prefix
-
-#TODO: add scala kernel
-
-# Cleanup
-RUN rm ijava-kernel.zip
 
 ####################
 # Install Hadoop
@@ -111,12 +88,6 @@ ARG MAVEN_VERSION=3.6.3
 ENV MAVEN_HOME    /usr/local/maven
 ENV PATH          $PATH:$MAVEN_HOME/bin
 
-#RUN echo "https://archive.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.zip" \
-#    && curl https://archive.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.zip --output apache-maven-${MAVEN_VERSION}-bin.zip \
-#    && unzip apache-maven-${MAVEN_VERSION}-bin.zip \
-#    && mv apache-maven-3.6.3 ${MAVEN_HOME} \
-#    && rm -r apache-maven-${MAVEN_VERSION}-bin.zip
-
 RUN curl https://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.zip --output apache-maven-${MAVEN_VERSION}-bin.zip \
  && unzip apache-maven-${MAVEN_VERSION}-bin.zip \
  && mv apache-maven-3.6.3 ${MAVEN_HOME} \
@@ -139,32 +110,38 @@ RUN curl https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SP
 
 #TODO: start spark at the moment of start the container
 
-####################
-# Example add
-####################
+# Set the working environment for the app
+WORKDIR /app
 
-COPY example ${HOME}/
+# Copy only the POM file first to leverage Docker layer caching
+COPY pom.xml .
 
-RUN rm -rf ijava-kernel work
+# Create a directory for dependencies in the Docker image
+RUN mkdir -p /app/lib
 
+# Copy local JAR dependencies to the /app/lib directory in the Docker image
+COPY wayang-0.6.1-SNAPSHOT/jars/* /app/lib/
 
-####################
-# Install Scala Kernel for jupyter
-####################
+# Install Maven dependencies
+RUN mvn clean install
 
-RUN curl -Lo /usr/local/bin/coursier https://github.com/coursier/coursier/releases/download/v2.0.0-RC3-2/coursier && \
-    chmod +x /usr/local/bin/coursier
+# Copy the rest of the application source code
+COPY . .
 
-# Set user back to priviledged user.
-USER ${NB_USER}
+RUN mvn clean install
 
-COPY bin/install-kernels.sh .
-RUN ./install-kernels.sh && \
-    rm install-kernels.sh
+# Copy jar with main
+RUN cp /app/target/multi-context-1.0-SNAPSHOT.jar /app/wayang-0.6.1-SNAPSHOT/jars/
 
-# Copy wayang and hadoop jars
-COPY wayang-0.6.1-SNAPSHOT /usr/local/wayang-0.6.1-SNAPSHOT
-COPY hadoop-jars /usr/local/hadoop-jars
+ENV WAYANG_HOME /app/wayang-0.6.1-SNAPSHOT
 
-# Set WAYANG_ASYNC_CLASSPATH
-ENV WAYANG_ASYNC_CLASSPATH="/home/jovyan/.local/share/jupyter/kernels/scala212/launcher.jar:/usr/local/wayang-0.6.1-SNAPSHOT/jars/*:/usr/local/wayang-0.6.1-SNAPSHOT/libs/*:/usr/local/hadoop-jars/*"
+COPY run_script.sh /usr/local/bin/run_script.sh
+RUN chmod +x /usr/local/bin/run_script.sh
+
+# For the output of the sample programs
+RUN mkdir -p /app/output
+
+# Execute user defined main
+# Meant to be called like below
+#   `docker run -v ./output:/app/output -it your-image-name com.example.MainClass`
+ENTRYPOINT ["/bin/bash", "/usr/local/bin/run_script.sh"]
