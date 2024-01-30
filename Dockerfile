@@ -113,35 +113,40 @@ RUN curl https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SP
 # Set the working environment for the app
 WORKDIR /app
 
-# Copy only the POM file first to leverage Docker layer caching
-COPY pom.xml .
-
 # Create a directory for dependencies in the Docker image
 RUN mkdir -p /app/lib
 
 # Copy local JAR dependencies to the /app/lib directory in the Docker image
 COPY wayang-0.6.1-SNAPSHOT/jars/* /app/lib/
 
-# Install Maven dependencies
-RUN mvn clean install
-
-# Copy the rest of the application source code
-COPY . .
-
-RUN mvn clean install
-
-# Copy jar with main
-RUN cp /app/target/multi-context-1.0-SNAPSHOT.jar /app/wayang-0.6.1-SNAPSHOT/jars/
-
+# Set Wayang home
 ENV WAYANG_HOME /app/wayang-0.6.1-SNAPSHOT
-
-COPY run_script.sh /usr/local/bin/run_script.sh
-RUN chmod +x /usr/local/bin/run_script.sh
 
 # For the output of the sample programs
 RUN mkdir -p /app/output
 
-# Execute user defined main
-# Meant to be called like below
+# Copy run script
+COPY run_script.sh .
+RUN chmod +x /app/run_script.sh
+
+# Copy only the POM file first to leverage Docker layer caching
+COPY pom.xml .
+
+# Install Maven dependencies
+RUN mvn clean install
+
+# Copy the rest of the application source code
+COPY src src
+
+# Install main programs
+RUN mvn clean install
+
+# Copy wayang
+COPY wayang-0.6.1-SNAPSHOT wayang-0.6.1-SNAPSHOT
+
+# Copy jar with main programs into where wayang-submit.sh will find it
+RUN cp /app/target/multi-context-1.0-SNAPSHOT.jar /app/wayang-0.6.1-SNAPSHOT/jars/
+
+# Execute user defined main, i.e.
 #   `docker run -v ./output:/app/output -it your-image-name com.example.MainClass`
-ENTRYPOINT ["/bin/bash", "/usr/local/bin/run_script.sh"]
+ENTRYPOINT ["/bin/bash", "/app/run_script.sh"]
