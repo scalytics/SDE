@@ -35,3 +35,15 @@ docker exec -it $(docker container ls | grep "blossom" | tr " " "\n" | tail -n 1
 ```
 sudo chmod -R 777 ~/.ivy2/
 ```
+
+## 04-sdg.ipynb
+
+Add the following option in the docker run command.
+
+```
+-v /home/mike/Desktop/files:/home/jovyan/files
+```
+
+The `files` directory on the host machine should contain 
+the higgs dataset (https://archive.ics.uci.edu/dataset/280/higgs) 
+and also a configuration file called `wayang_sgd.properties` (could be an empty file if no further configuration is desired).

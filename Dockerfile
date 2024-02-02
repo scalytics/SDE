@@ -161,10 +161,3 @@ USER ${NB_USER}
 COPY bin/install-kernels.sh .
 RUN ./install-kernels.sh && \
     rm install-kernels.sh
-
-# Copy wayang and hadoop jars
-COPY wayang-0.6.1-SNAPSHOT /usr/local/wayang-0.6.1-SNAPSHOT
-COPY hadoop-jars /usr/local/hadoop-jars
-
-# Set WAYANG_ASYNC_CLASSPATH
-ENV WAYANG_ASYNC_CLASSPATH="/home/jovyan/.local/share/jupyter/kernels/scala212/launcher.jar:/usr/local/wayang-0.6.1-SNAPSHOT/jars/*:/usr/local/wayang-0.6.1-SNAPSHOT/libs/*:/usr/local/hadoop-jars/*"
