@@ -44,6 +44,6 @@ Add the following option in the docker run command.
 -v /home/mike/Desktop/files:/home/jovyan/files
 ```
 
-The `files` directory on the host machine should contain 
+The `files` directory on the host machine should contain a `higgs.csv` file containing 
 the higgs dataset (https://archive.ics.uci.edu/dataset/280/higgs) 
 and also a configuration file called `wayang_sgd.properties` (could be an empty file if no further configuration is desired).
