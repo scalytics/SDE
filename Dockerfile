@@ -139,14 +139,7 @@ RUN curl https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SP
 
 #TODO: start spark at the moment of start the container
 
-####################
-# Example add
-####################
-
-COPY example ${HOME}/
-
 RUN rm -rf ijava-kernel work
-
 
 ####################
 # Install Scala Kernel for jupyter
@@ -161,3 +154,9 @@ USER ${NB_USER}
 COPY bin/install-kernels.sh .
 RUN ./install-kernels.sh && \
     rm install-kernels.sh
+
+####################
+# Add examples
+####################
+
+COPY example ${HOME}/

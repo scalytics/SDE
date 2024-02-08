@@ -23,7 +23,7 @@ docker build -t blossom ./
 
 ## Run the docker container
 ```bash
-docker run -p 8888:8888 -v ${HOME}/.ivy2:/home/jovyan/.ivy2 blossom
+docker run -p 8888:8888 blossom
 ```
 
 ## Execute commands inside the docker container
@@ -31,19 +31,10 @@ docker run -p 8888:8888 -v ${HOME}/.ivy2:/home/jovyan/.ivy2 blossom
 docker exec -it $(docker container ls | grep "blossom" | tr " " "\n" | tail -n 1) /bin/bash
 ```
 
-## Fix permissions on ~/.ivy2  
-```
-sudo chmod -R 777 ~/.ivy2/
-```
+## Using custom input files
 
-## 04-sdg.ipynb
-
-Add the following option in the docker run command.
+Add the following option in the docker run command with the appropriate path:
 
 ```
--v /home/mike/Desktop/files:/home/jovyan/files
+-v /path/to/custom/input/files:/home/jovyan/files
 ```
-
-The `files` directory on the host machine should contain a `higgs.csv` file containing 
-the higgs dataset (https://archive.ics.uci.edu/dataset/280/higgs) 
-and also a configuration file called `wayang_sgd.properties` (could be an empty file if no further configuration is desired).
