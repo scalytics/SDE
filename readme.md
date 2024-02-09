@@ -6,35 +6,41 @@ BDE comes with:
 - Java [11](https://www.azul.com/downloads/?version=java-11-lts&os=ubuntu&architecture=x86-64-bit&package=jdk)
 - Maven [3.6.1](https://maven.apache.org/ref/3.6.3/)
 - Apache Wayang [0.6.1](https://wayang.apache.org/documentation/)
-- Apache Hadoop [2.7.7](https://hadoop.apache.org/docs/r2.7.7/)
+- Apache Hadoop [3.1.2](https://hadoop.apache.org/docs/r3.1.2/)
 - Apache Spark [3.1.2](https://spark.apache.org/docs/3.1.2/)
 - iJava [1.3.0](https://github.com/SpencerPark/IJava/releases/tag/v1.3.0)
 - Jupyter lab [3.3.0](https://jupyterlab.readthedocs.io/en/3.3.x/)
 
-## Use BDE with our pre-built Docker image
-```
-docker pull ghcr.io/databloom-ai/bde:main
-```
+## Starting the BDE
 
-## Build the docker image
-```bash
-docker build -t blossom ./
-```
+You can bring the BDE up and running by executing the command
 
-## Run the docker container
-```bash
-docker run -p 8888:8888 blossom
-```
-
-## Execute commands inside the docker container
-```bash
-docker exec -it $(docker container ls | grep "blossom" | tr " " "\n" | tail -n 1) /bin/bash
+```shell
+docker compose up
 ```
 
 ## Using custom input files
 
-Add the following option in the docker run command with the appropriate path:
+If you need the BDE to process your custom files, you can do this by altering the docker-compose.yml.
+
+Change this part
 
 ```
--v /path/to/custom/input/files:/home/jovyan/files
+  jupyter:
+    build: jupyter
+    ports:
+      - "8888:8888"
 ```
+
+to this:
+
+```
+  jupyter:
+    build: jupyter
+    ports:
+      - "8888:8888"
+    volumes:
+      - /path/to/custom/input/files:/home/jovyan/files
+```
+
+Your files should be located in a known location on your machine (referred to as `/path/to/custom/input/files`). These files will be accessible within your BDE under the path files (for example, `files/my.custom.file`).
