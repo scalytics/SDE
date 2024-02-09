@@ -30,6 +30,8 @@ Change this part
     build: jupyter
     ports:
       - "8888:8888"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"  
 ```
 
 to this:
@@ -39,8 +41,14 @@ to this:
     build: jupyter
     ports:
       - "8888:8888"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - /path/to/custom/input/files:/home/jovyan/files
 ```
 
 Your files should be located in a known location on your machine (referred to as `/path/to/custom/input/files`). These files will be accessible within your BDE under the path files (for example, `files/my.custom.file`).
+
+## Connecting to a database on localhost
+
+Use `host.docker.internal` instead of `localhost`.
