@@ -1,8 +1,8 @@
-# Blossom Development Environment (BDE)
+# Scalytics Connect Development Environment (SDE)
 
-Read our [Wiki](https://github.com/databloom-ai/BDE/wiki) how to use BDE, with code examples and how-to's
+Read our [Wiki](https://github.com/scalytics/BDE/wiki) how to use BDE, with code examples and how-to's
 
-BDE comes with: 
+SDE comes with: 
 - Java [11](https://www.azul.com/downloads/?version=java-11-lts&os=ubuntu&architecture=x86-64-bit&package=jdk)
 - Maven [3.6.1](https://maven.apache.org/ref/3.6.3/)
 - Apache Wayang [0.6.1](https://wayang.apache.org/documentation/)
@@ -11,9 +11,9 @@ BDE comes with:
 - iJava [1.3.0](https://github.com/SpencerPark/IJava/releases/tag/v1.3.0)
 - Jupyter lab [3.3.0](https://jupyterlab.readthedocs.io/en/3.3.x/)
 
-## Starting the BDE
+## Starting the SDE
 
-You can bring the BDE up and running by executing the command
+You can bring the SDE up and running by executing the command
 
 ```shell
 docker compose up
