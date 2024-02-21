@@ -67,7 +67,7 @@ ENV HADOOP_HOME     /usr/local/hadoop
 ENV HADOOP_OPTS     -Djava.library.path=/usr/local/hadoop/lib/native
 ENV PATH            $PATH:${HADOOP_HOME}/bin:${HADOOP_HOME}/sbin
 
-RUN curl http://archive.apache.org/dist/hadoop/core/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz --output hadoop-${HADOOP_VERSION}.tar.gz \
+RUN curl https://archive.apache.org/dist/hadoop/core/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz --output hadoop-${HADOOP_VERSION}.tar.gz \
  && tar -zxf hadoop-${HADOOP_VERSION}.tar.gz \
  && rm hadoop-${HADOOP_VERSION}.tar.gz \
  && mv hadoop-${HADOOP_VERSION} ${HADOOP_HOME} \
